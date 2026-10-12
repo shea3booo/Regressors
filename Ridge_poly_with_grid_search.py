@@ -81,3 +81,40 @@ val_rmse = root_mean_squared_error(y_val, y_pred_val)
 
 print("Training RMSE:", train_rmse)
 print("Validation RMSE:", val_rmse)
+
+
+#====================================
+# visualization  the performance of all hyperparameters
+#====================================
+import matplotlib.pyplot as plt
+import pandas as pd
+
+# Extract all Grid Search results
+results = pd.DataFrame(grid_search.cv_results_)
+
+# Convert negative RMSE to positive RMSE
+results["CV_RMSE"] = -results["mean_test_score"]
+
+# Plot one curve for each polynomial degree
+plt.figure(figsize=(10, 6))
+
+for degree in sorted(results["param_poly__degree"].unique()):
+    subset = results[
+        results["param_poly__degree"] == degree
+    ].sort_values("param_ridge__alpha")
+
+    plt.plot(
+        subset["param_ridge__alpha"].astype(float),
+        subset["CV_RMSE"],
+        marker="o",
+        label=f"Degree {degree}"
+    )
+
+plt.xscale("log")
+plt.xlabel("Ridge Alpha (log scale)")
+plt.ylabel("Cross-Validation RMSE")
+plt.title("Polynomial Degree and Ridge Alpha vs CV RMSE")
+plt.legend()
+plt.grid(True)
+plt.tight_layout()
+plt.show()
