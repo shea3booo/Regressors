@@ -43,7 +43,7 @@ rmse_val = []
 
 # Train a separate model for each degree
 for degree in degrees:
-gi
+
     # Polynomial transformation
     poly = PolynomialFeatures(
         degree=degree,
